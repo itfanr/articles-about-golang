@@ -1,1 +1,1 @@
-# translations-of-golang-articles
+# articles-about-golang
