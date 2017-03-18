@@ -9,13 +9,13 @@ vet是一个优雅的工具，每个Go开发者都要知道并会使用它。它
 $ go tool vet <directory|files>
 ```
 
-本文中所有的go代码段可以正常编译。这使得go vet有价值：它可以发现bug，在编译阶段和运行阶段。
+本文中所有的go代码段可以正常编译。这使得go vet有价值：它可以在编译阶段和运行阶段发现bug。
 
 同时也注意，本文中的大多数代码都是故意写的很难看，不要使用。
 
 ## 在go vet和go tool vet之间选择
 
-go vet和go tool vet实际上是两个分开的命令。
+`go vet`和`go tool vet`实际上是两个分开的命令。
 
 go vet，只在一个单独的包内可用，不能使用flag 选项（来激活某些指定的检测）。
 
@@ -44,7 +44,7 @@ func main() {
 }
 ```
 
-这是一个典型的错误，一个坏的printf 格式。因为str是一个字符串，所以format应该用%s，而不是%d。
+这是一个典型的错误，一个坏的printf 格式。因为str是一个字符串，所以format应该用`%s`，而不是`%d`。
 
 这个代码编译后运行，打印出`%!d(string=hello world!)`，不够友好。你可以点击源码下面的“run”链接来自己检查。现在，我们开始运行vet。
 
@@ -54,7 +54,7 @@ $ go tool vet ex1.go
 ex1.go:7: arg str for printf verb %d of wrong type: string
 ```
 
-当一个指针被使用时，vet也可以检测:
+当一个指针被使用时，vet也可以检测：
 
 ```
 package main
@@ -72,7 +72,7 @@ $ go tool vet ex2.go
 ex2.go:7: arg &str for printf verb %s of wrong type: *string
 ```
 
-vet也可以找到所有的Printf()家族函数（Printf(), Sprintf(), Fprintf(), Errorf(), Fatalf(), Logf(), Panicf()等）格式错误。但是如果你要实现一个函数，接收和printf类似的参数，你可以使用-printfuncs选项使得vet来检测。
+vet也可以找到所有的Printf()家族函数（Printf(), Sprintf(), Fprintf(), Errorf(), Fatalf(), Logf(), Panicf()等）格式错误。但是如果你要实现一个函数，接收和printf类似的参数，你可以使用`-printfuncs`选项使得vet来检测。
 
 ```
 package main
@@ -95,7 +95,7 @@ $ go tool vet -printfuncs customLogf custom-printf-func.go
 custom-printf-func.go:11: arg i for printf verb %s of wrong type: int
 ```
 
-你可以看到如果没有e -printfuncs选项，vet没有任何输出。
+你可以看到如果没有`-printfuncs`选项，vet没有任何输出。
 
 ## Boolean 错误
 
@@ -278,9 +278,9 @@ $ go tool vet false.go
 false.go:10: possible formatting directive in Println call
 ```
 
-这种情况很明显永远都不是true，但是并不会检测出来。然而，vet警告了一种可能的错误（使用Println()而不是Printf()），这里Println()非常好。
+这种情况很明显永远都不是true，但是并不会检测出来。然而，vet警告了一种可能的错误（使用Println()而不是Printf()），这里的Println()非常好用。
 
-总的来说，假正和假负足够竞争，使得go tool vet的输出广泛相关。
+总的来说，假正和假负足够竞争，使得go tool vet的输出相关广泛（译者：没懂作者的意思。。。）。
 
 ##性能
 
@@ -288,8 +288,8 @@ vet的README描述了，只是可能的错误是值得检测的。这种方式�
 
 此时，Docker包含了23M的Go代码（包含依赖）。在Core i5机器上，vet花费了21.6秒来分析它。这是1MB/s的数量级。
 
-可能你期待有一天，可以看到这些“不可能的检查”包含在vet里面。默认不激活他们可能是一个好办法来满足所有人。如果检查在技术上是可行的,并且在现实生活中可以找到实际的缺陷项目,把它作为一个选项是有价值的。
+可能你期待有一天，可以看到这些“不可能的检查”包含在vet里面。为了满足所有人的需求，默认不激活它们可能是一个好办法。如果检查在技术上是可行的，并且在现实生活中可以找到实际的缺陷项目，那么把它作为一个选项是有价值的。
 
 ## vet和build比较
 
-虽然vet是不完美的，但是它仍然是一个非常有价值的朋友，它应该在所有的Go项目中定期使用。它是那么有价值，以至于它甚至可以让我们怀疑是不是有些检测不应该被编译器检测到。为什么有人想编译一个检测到有prrintf格式错误的代码呢？
+虽然vet是不完美的，但是它仍然是一个非常有价值的工具，它应该在所有的Go项目中定期使用。它是那么有价值，以至于它甚至可以让我们怀疑是不是有些检测不应该被编译器检测到。为什么有人会编译一个检测到有prrintf格式错误的代码呢？
